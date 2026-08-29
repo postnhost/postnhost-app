@@ -1,0 +1,25 @@
+<!DOCTYPE html>
+<html lang="<%= content_for?(:lang) ? yield(:lang) : 'en' %>">
+  <head>
+    <title><%= content_for?(:title) ? yield(:title) : "postnhost" %></title>
+    <meta name="description" content="<%= content_for?(:meta_description) ? yield(:meta_description) : "PostnHost is an open-source, SEO-ready CMS for Ruby on Rails." %>">
+    <meta name="viewport" content="width=device-width,initial-scale=1">
+    <%= csrf_meta_tags %>
+    <%= csp_meta_tag %>
+
+    <%= stylesheet_link_tag "postnhost/application", "data-turbo-track": "reload" %>
+    <%= javascript_include_tag "postnhost/application", "data-turbo-track": "reload", type: "module" %>
+
+    <%= render 'layouts/postnhost/favicon' %>
+
+    <%= yield :head %>
+  </head>
+
+  <body class="h-screen flex flex-col">
+    <main class="flex-1">
+      <div>
+        <%= yield %>
+      </div>
+    </main>
+  </body>
+</html>

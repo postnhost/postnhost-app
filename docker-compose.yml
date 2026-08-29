@@ -1,0 +1,27 @@
+services:
+  web:
+    build:
+      context: .
+      dockerfile: Dockerfile.dev
+    init: true
+    shm_size: "1gb"
+    ports:
+      - "${POSTNHOST_PORT:-3000}:3000"
+    environment:
+      BINDING: 0.0.0.0
+      RAILS_ENV: development
+    volumes:
+      - .:/rails
+      - node_modules:/rails/node_modules
+      - storage:/rails/storage
+    stdin_open: true
+    tty: true
+    command: >-
+      bash -c "rm -f tmp/pids/server.pid &&
+      yarn install --frozen-lockfile &&
+      bin/rails db:prepare &&
+      exec bin/dev"
+
+volumes:
+  node_modules:
+  storage:

@@ -1,0 +1,18 @@
+{
+  "name": "postnhost-cms",
+  "private": true,
+  "scripts": {
+    "build": "yarn build:css",
+    "build:css": "bundle exec rails postnhost:tailwindcss:build",
+    "build:css:watch": "bundle exec rails postnhost:tailwindcss:watch",
+    "postnhost:tailwindcss": "bundle exec rails postnhost:tailwindcss:build",
+    "postnhost:tailwindcss:watch": "bundle exec rails postnhost:tailwindcss:watch"
+  },
+  "dependencies": {
+    "@tailwindcss/cli": "^4.1.12",
+    "@tailwindcss/typography": "^0.5.16",
+    "tailwindcss": "^4.1.12"
+  },
+  "packageManager": "yarn@1.22.22",
+  "devDependencies": {}
+}

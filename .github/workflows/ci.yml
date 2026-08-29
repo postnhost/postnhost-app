@@ -1,0 +1,63 @@
+name: CI
+
+on:
+  pull_request:
+  push:
+    branches: [main]
+
+permissions:
+  contents: read
+
+concurrency:
+  group: ci-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  application:
+    name: Application
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    env:
+      CI: "true"
+      RAILS_ENV: test
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v6
+
+      - name: Set up Ruby
+        uses: ruby/setup-ruby@v1
+        with:
+          bundler-cache: true
+
+      - name: Set up Node
+        uses: actions/setup-node@v6
+        with:
+          node-version: 24.19.0
+          cache: yarn
+
+      - name: Enable Corepack
+        run: corepack enable
+
+      - name: Set up Chrome
+        uses: browser-actions/setup-chrome@v2
+
+      - name: Install system dependencies
+        run: |
+          sudo apt-get update
+          sudo apt-get install --no-install-recommends -y libvips42
+
+      - name: Run application checks
+        run: bin/ci
+
+  container:
+    name: Production container
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v6
+
+      - name: Build production image
+        run: docker build --tag postnhost-app:ci .

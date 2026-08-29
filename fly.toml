@@ -1,0 +1,63 @@
+# fly.toml app configuration file generated for postnhost on 2026-08-21T23:25:09+01:00
+#
+# See https://fly.io/docs/reference/configuration/ for information about how to use this file.
+#
+
+app = 'postnhost'
+primary_region = 'cdg'
+swap_size_mb = 2048
+console_command = '/rails/bin/rails console'
+
+[build]
+[env]
+  DATABASE_PATH = '/data/production.sqlite3'
+  PORT = '8080'
+  SOLID_QUEUE_IN_PUMA = 'true'
+
+[processes]
+  app = './bin/rails server'
+
+[[mounts]]
+  source = 'data'
+  destination = '/data'
+  auto_extend_size_threshold = 80
+  auto_extend_size_increment = '1GB'
+  auto_extend_size_limit = '10GB'
+
+[http_service]
+  internal_port = 8080
+  force_https = true
+  auto_stop_machines = 'suspend'
+  auto_start_machines = true
+  min_machines_running = 1
+  processes = ['app']
+
+  [[http_service.checks]]
+    interval = '15s'
+    timeout = '15s'
+    grace_period = '10s'
+    method = 'GET'
+    path = '/up'
+    protocol = 'http'
+    tls_skip_verify = false
+
+    [http_service.checks.headers]
+      X-Forwarded-Proto = 'https'
+
+  [[http_service.checks]]
+    interval = '10s'
+    timeout = '2s'
+    grace_period = '5s'
+    method = 'GET'
+    path = '/up'
+    protocol = 'http'
+    tls_skip_verify = false
+
+    [http_service.checks.headers]
+      X-Forwarded-Proto = 'https'
+
+[[vm]]
+  size = 'shared-cpu-2x'
+  memory = '1gb'
+  cpus = 1
+  memory_mb = 1024

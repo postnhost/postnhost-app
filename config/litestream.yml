@@ -1,0 +1,20 @@
+# Litestream configuration for continuous SQLite replication to S3-compatible storage
+# Supports: AWS S3, Tigris, DigitalOcean Spaces, Backblaze B2, and other S3-compatible services
+#
+# Environment variables are configured in config/initializers/litestream.rb
+# using Rails encrypted credentials for secure secret management.
+#
+# For more details, see: https://litestream.io/reference/config/
+dbs:
+  - path: /rails/storage/production.sqlite3
+    replicas:
+      - type: s3
+        bucket: $LITESTREAM_REPLICA_BUCKET
+        path: storage/production.sqlite3
+        region: $LITESTREAM_REPLICA_REGION
+        endpoint: $LITESTREAM_REPLICA_ENDPOINT
+        access-key-id: $LITESTREAM_ACCESS_KEY_ID
+        secret-access-key: $LITESTREAM_SECRET_ACCESS_KEY
+        force-path-style: true
+        retention: 72h
+        retention-check-interval: 1h
